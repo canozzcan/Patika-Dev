@@ -1,4 +1,4 @@
-console.log('-------------------- These are food app feedbacks --------------\n')
+console.log('-------------------- These are food app feedback --------------\n')
 
 const posts = [
     { user: 'Mike', comment: 'Looks delicious' },
