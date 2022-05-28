@@ -1,19 +1,29 @@
 const express = require('express');
+const mongoose = require('mongoose');
+const Post = require('./models/Post');
+
 
 const port = 3000;
 
 const app = express();
 
+// connect DB
+mongoose.connect('mongodb://localhost/cleanblog-test-db', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+});
+
 app.set("view engine", "ejs");
 
 app.use(express.static('public'));
+app.use(express.urlencoded({extended:true}));
+app.use(express.json());
 
-app.get('/', (req, res) => {
-    res.render('index');
-});
-
-app.get('/post', (req, res) => {
-    res.render('post');
+app.get('/', async (req, res) => {
+    const posts = await Post.find({});
+    res.render('index', {
+        posts: posts
+    });
 });
 
 app.get('/about', (req, res) => {
@@ -24,7 +34,15 @@ app.get('/add_post', (req, res) => {
     res.render('add_post');
 });
 
+app.post('/posts', async (req, res) => {
+    await Post.create(req.body)
+    res.redirect('/');
+});
 
-app.listen(port, ()=> {
+app.get('/post', (req, res) => {
+    res.render('post');
+});
+
+app.listen(port, () => {
     console.log(`Server started at port: ${port}`);
 });
